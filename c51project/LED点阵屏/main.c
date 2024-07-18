@@ -1,0 +1,40 @@
+#include <REGX52.H>
+#include "Delay.h"
+#include "MAtrixLED.h"
+#include "Timer0.h"
+unsigned char Offset;
+unsigned char Animation[] = {0x30,0x78,0x7C,0x3E,0x3E,0x7C,0x78,0x30,0x04,0x08,0x11,0x7F,0x10,0x08,0x06,0x00,
+0x00,0x00,0x05,0x15,0xD6,0xDC,0xD6,0x15,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,};
+
+void Timer0_Routine() interrupt 1
+{
+	static unsigned int T0Count;
+	TL0 = 0x66;		//设置定时初值
+	TH0 = 0xFC;		//设置定时初值
+	T0Count++;
+	if(T0Count>=250)
+	{
+
+		T0Count = 0;
+		Offset++;
+		if(Offset>=32)
+		{
+			Offset = 0;
+		}
+	}
+}
+
+void main()
+{	
+	unsigned char i;
+	Matrix_Init();
+	Timer0Init();
+	while(1)
+	{	
+		for(i = 0;i < 8;i++)
+		{
+		Matrix(i,Animation[i + Offset]);		
+		}
+}	
+}
+

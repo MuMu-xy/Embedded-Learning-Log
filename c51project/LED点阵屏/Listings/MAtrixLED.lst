@@ -1,0 +1,70 @@
+C51 COMPILER V9.57.0.0   MATRIXLED                                                         07/07/2024 16:05:39 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MATRIXLED
+OBJECT MODULE PLACED IN .\Objects\MAtrixLED.obj
+COMPILER INVOKED BY: D:\360Downloads\C51\BIN\C51.EXE MAtrixLED.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
+                    -tings\MAtrixLED.lst) TABS(2) OBJECT(.\Objects\MAtrixLED.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          sbit SER = P3^4;
+   4          sbit SCL = P3^6;
+   5          sbit RCL = P3^5;
+   6          
+   7          #define MATRIX_LED_PORT P0
+   8          /*点阵屏初始化*/
+   9          void Matrix_Init()
+  10          {
+  11   1          SCL = 0;
+  12   1        RCL = 0;
+  13   1      }
+  14          
+  15          /**
+  16            *@brief     74hc595写入一个字节
+  17            *@parpm     写入的字节  
+  18            *@retval    无
+  19            */
+  20          void _74HC595_(unsigned char num)
+  21          {
+  22   1        unsigned int i;
+  23   1        for(i=0;i<8;i++)
+  24   1        {
+  25   2          SER = num&(0x80>>i);
+  26   2          SCL = 1;
+  27   2          SCL = 0;
+  28   2        }
+  29   1        RCL = 1;
+  30   1        RCL = 0;
+  31   1      }
+  32          
+  33          /**
+  34            *@brief   lcd点阵屏写入一个数据
+  35            *@parpm   column列数范围（0~7），num选择列显示的数据（高位在上），1亮0灭
+  36            *@retval  无
+  37            */
+  38          void Matrix(unsigned char column,num)
+  39          {
+  40   1        _74HC595_(num);
+  41   1        MATRIX_LED_PORT = ~(0x80 >> column);
+  42   1        Delay(1);
+  43   1        MATRIX_LED_PORT = 0xFF;
+  44   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     92    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.57.0.0   MATRIXLED                                                         07/07/2024 16:05:39 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
